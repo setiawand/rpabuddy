@@ -22,3 +22,19 @@ python src/scraper.py --url https://contoh.com --selector "h1"
 
 Skrip akan membuka halaman menggunakan Selenium dan menampilkan teks dari elemen yang sesuai dengan selector.
 
+
+## Docker
+
+Anda dapat menjalankan aplikasi ini di dalam container. Bangun image dengan:
+
+```bash
+docker build -t rpabuddy .
+```
+
+Kemudian jalankan:
+
+```bash
+docker run --rm rpabuddy --url https://contoh.com --selector "h1"
+```
+
+
