@@ -1,6 +1,8 @@
 """Simple RPA-based web scraper."""
 
 import argparse
+import shutil
+import tempfile
 from typing import List
 
 from bs4 import BeautifulSoup  # type: ignore
@@ -12,12 +14,15 @@ def scrape(url: str, selector: str) -> List[str]:
     """Open the web page and return texts matching CSS selector."""
     options = Options()
     options.add_argument("--headless")
+    user_data_dir = tempfile.mkdtemp(prefix="selenium-")
+    options.add_argument(f"--user-data-dir={user_data_dir}")
     driver = webdriver.Chrome(options=options)
     try:
         driver.get(url)
         html = driver.page_source
     finally:
         driver.quit()
+        shutil.rmtree(user_data_dir, ignore_errors=True)
 
     soup = BeautifulSoup(html, "html.parser")
     elements = soup.select(selector)
