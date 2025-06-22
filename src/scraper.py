@@ -15,15 +15,11 @@ def scrape(url: str, selector: str) -> List[str]:
     options = Options()
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
-    user_data_dir = tempfile.mkdtemp(prefix="selenium-")
-    options.add_argument(f"--user-data-dir={user_data_dir}")
-    driver = webdriver.Chrome(options=options)
-    try:
-        driver.get(url)
-        html = driver.page_source
-    finally:
-        driver.quit()
-        shutil.rmtree(user_data_dir, ignore_errors=True)
+    with tempfile.TemporaryDirectory(prefix="selenium-") as user_data_dir:
+        options.add_argument(f"--user-data-dir={user_data_dir}")
+        with webdriver.Chrome(options=options) as driver:
+            driver.get(url)
+            html = driver.page_source
 
     soup = BeautifulSoup(html, "html.parser")
     elements = soup.select(selector)
