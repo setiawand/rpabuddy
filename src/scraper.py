@@ -14,6 +14,7 @@ def scrape(url: str, selector: str) -> List[str]:
     """Open the web page and return texts matching CSS selector."""
     options = Options()
     options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
     with tempfile.TemporaryDirectory(prefix="selenium-") as user_data_dir:
         options.add_argument(f"--user-data-dir={user_data_dir}")
         with webdriver.Chrome(options=options) as driver:

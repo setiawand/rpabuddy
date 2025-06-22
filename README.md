@@ -37,6 +37,10 @@ Kemudian jalankan:
 docker run --rm rpabuddy --url https://contoh.com --selector "h1"
 ```
 
+Browser Chromium dalam container memerlukan flag `--no-sandbox`. Skrip sudah
+menambahkan flag ini secara otomatis, tetapi pastikan Anda tetap
+menggunakannya bila menyesuaikan konfigurasi.
+
 ## Docker Compose
 
 Jika Anda lebih suka menggunakan Docker Compose, file `docker-compose.yml`
