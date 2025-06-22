@@ -37,4 +37,14 @@ Kemudian jalankan:
 docker run --rm rpabuddy --url https://contoh.com --selector "h1"
 ```
 
+## Docker Compose
+
+Jika Anda lebih suka menggunakan Docker Compose, file `docker-compose.yml`
+disediakan. Bangun image dan jalankan skrip dengan:
+
+```bash
+docker compose build
+docker compose run rpabuddy --url https://contoh.com --selector "h1"
+```
+
 
