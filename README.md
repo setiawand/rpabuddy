@@ -22,6 +22,22 @@ python src/scraper.py --url https://contoh.com --selector "h1"
 
 Skrip akan membuka halaman menggunakan Selenium dan menampilkan teks dari elemen yang sesuai dengan selector.
 
+### Login
+
+Anda dapat menjalankan proses login mandiri dengan opsi `--login` dan parameter terkait:
+
+```bash
+python src/scraper.py --login \
+  --url https://contoh.com/login \
+  --username nama_pengguna \
+  --password kata_sandi \
+  --username-selector nama-class \
+  --password-selector sandi-class \
+  --submit-selector tombol-id
+```
+
+Perintah di atas hanya menguji proses login dan akan menampilkan pesan `Login berhasil` atau `Login gagal`.
+
 
 ## Docker
 

@@ -68,8 +68,41 @@ def login(
 def main() -> None:
     parser = argparse.ArgumentParser(description="RPA web scraper")
     parser.add_argument("--url", required=True, help="Target URL")
-    parser.add_argument("--selector", required=True, help="CSS selector to extract")
+    parser.add_argument("--selector", help="CSS selector to extract")
+
+    parser.add_argument("--login", action="store_true", help="Run login flow")
+    parser.add_argument("--username", help="Username for login")
+    parser.add_argument("--password", help="Password for login")
+    parser.add_argument("--username-selector", help="Class for username field")
+    parser.add_argument("--password-selector", help="Class for password field")
+    parser.add_argument("--submit-selector", help="ID for submit button")
+
     args = parser.parse_args()
+
+    if args.login:
+        required = [
+            args.username,
+            args.password,
+            args.username_selector,
+            args.password_selector,
+            args.submit_selector,
+        ]
+        if not all(required):
+            parser.error("login requires username, password, and element selectors")
+
+        success = login(
+            args.url,
+            args.username,
+            args.password,
+            args.username_selector,
+            args.password_selector,
+            args.submit_selector,
+        )
+        print("Login berhasil" if success else "Login gagal")
+        return
+
+    if not args.selector:
+        parser.error("--selector is required unless --login is specified")
 
     results = scrape(args.url, args.selector)
     for text in results:
