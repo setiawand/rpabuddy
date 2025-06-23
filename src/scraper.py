@@ -49,13 +49,13 @@ def login(
         with webdriver.Chrome(options=options) as driver:
             driver.get(url)
 
-            driver.find_element("css selector", username_selector).send_keys(
+            driver.find_element("class", username_selector).send_keys(
                 username
             )
-            driver.find_element("css selector", password_selector).send_keys(
+            driver.find_element("class", password_selector).send_keys(
                 password
             )
-            driver.find_element("css selector", submit_selector).click()
+            driver.find_element("id", submit_selector).click()
 
             try:
                 WebDriverWait(driver, 10).until(EC.url_changes(url))
