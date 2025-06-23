@@ -49,6 +49,8 @@ def login(
         with webdriver.Chrome(options=options) as driver:
             driver.get(url)
 
+            driver.find_element("id", "login_link_top").click()
+            
             driver.find_element("class", username_selector).send_keys(
                 username
             )
