@@ -53,6 +53,18 @@ Kemudian jalankan:
 docker run --rm rpabuddy --url https://contoh.com --selector "h1"
 ```
 
+Untuk menjalankan proses login di dalam container, gunakan:
+
+```bash
+docker run --rm rpabuddy --login \
+  --url https://contoh.com/login \
+  --username nama_pengguna \
+  --password kata_sandi \
+  --username-selector nama-class \
+  --password-selector sandi-class \
+  --submit-selector tombol-id
+```
+
 Browser Chromium dalam container memerlukan flag `--no-sandbox`. Skrip sudah
 menambahkan flag ini secara otomatis, tetapi pastikan Anda tetap
 menggunakannya bila menyesuaikan konfigurasi.
@@ -65,6 +77,19 @@ disediakan. Bangun image dan jalankan skrip dengan:
 ```bash
 docker compose build
 docker compose run rpabuddy --url https://contoh.com --selector "h1"
+```
+
+Untuk login menggunakan Docker Compose:
+
+```bash
+docker compose build
+docker compose run rpabuddy --login \
+  --url https://contoh.com/login \
+  --username nama_pengguna \
+  --password kata_sandi \
+  --username-selector nama-class \
+  --password-selector sandi-class \
+  --submit-selector tombol-id
 ```
 
 
