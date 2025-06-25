@@ -51,10 +51,10 @@ def login(
 
             driver.find_element("id", "login_link_top").click()
             
-            driver.find_element("class", username_selector).send_keys(
+            driver.find_element("class name", username_selector).send_keys(
                 username
             )
-            driver.find_element("class", password_selector).send_keys(
+            driver.find_element("class name", password_selector).send_keys(
                 password
             )
             driver.find_element("id", submit_selector).click()
