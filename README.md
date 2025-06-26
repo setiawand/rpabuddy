@@ -93,15 +93,18 @@ Kemudian jalankan:
 docker run --rm rpabuddy --url https://contoh.com --selector "h1"
 ```
 
-Untuk menjalankan proses login di dalam container, gunakan:
+Untuk menjalankan proses login di dalam container, Anda perlu me-*mount* berkas
+`config.json` karena berkas tersebut tidak termasuk di dalam image:
 
 ```bash
-docker run --rm rpabuddy --login \
-  --url https://contoh.com/login \
-  --config config.json \
-  --username-selector nama-class \
-  --password-selector sandi-class \
-  --submit-selector tombol-id
+docker run --rm \
+  -v "$(pwd)/config.json:/app/config.json" \
+  rpabuddy --login \
+    --url https://contoh.com/login \
+    --config /app/config.json \
+    --username-selector nama-class \
+    --password-selector sandi-class \
+    --submit-selector tombol-id
 ```
 
 Browser Chromium dalam container memerlukan flag `--no-sandbox`. Skrip sudah
@@ -118,13 +121,14 @@ docker compose build
 docker compose run rpabuddy --url https://contoh.com --selector "h1"
 ```
 
-Untuk login menggunakan Docker Compose:
+Untuk login menggunakan Docker Compose, *mount* berkas konfigurasi yang sama
+dengan contoh di atas:
 
 ```bash
 docker compose build
-docker compose run rpabuddy --login \
+docker compose run -v "$(pwd)/config.json:/app/config.json" rpabuddy --login \
   --url https://contoh.com/login \
-  --config config.json \
+  --config /app/config.json \
   --username-selector nama-class \
   --password-selector sandi-class \
   --submit-selector tombol-id
