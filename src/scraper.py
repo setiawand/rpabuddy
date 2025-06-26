@@ -169,7 +169,7 @@ def login_and_advanced_search(
             WebDriverWait(driver, 10).until(EC.url_contains("query.cgi"))
 
             logger.info("Switching to advanced search")
-            driver.get("https://contoh.com/query.cgi?format=specific")
+            driver.get("https://contoh.com/query.cgi?format=advanced")
             try:
                 WebDriverWait(driver, 10).until(
                     EC.presence_of_element_located(
