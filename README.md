@@ -64,7 +64,7 @@ Anda dapat menjalankan proses login kemudian langsung melakukan pencarian lanjut
 
 ```bash
 python src/scraper.py --advanced-search \
-  --url https://bugz.fds.co.id/ \
+  --url https://contoh.com/ \
   --username nama_pengguna \
   --password kata_sandi \
   --username-selector nama-class \
