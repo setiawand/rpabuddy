@@ -24,13 +24,33 @@ Skrip akan membuka halaman menggunakan Selenium dan menampilkan teks dari elemen
 
 ### Login
 
-Anda dapat menjalankan proses login mandiri dengan opsi `--login` dan parameter terkait:
+Anda dapat menjalankan proses login mandiri dengan opsi `--login` dan parameter terkait. Kredensial juga dapat disimpan dalam berkas konfigurasi JSON dengan opsi `--config`:
 
 ```bash
 python src/scraper.py --login \
   --url https://contoh.com/login \
   --username nama_pengguna \
   --password kata_sandi \
+  --username-selector nama-class \
+  --password-selector sandi-class \
+  --submit-selector tombol-id
+```
+
+Atau simpan kredensial ke dalam berkas `config.json`:
+
+```json
+{
+  "username": "nama_pengguna",
+  "password": "kata_sandi"
+}
+```
+
+Kemudian jalankan:
+
+```bash
+python src/scraper.py --login \
+  --url https://contoh.com/login \
+  --config config.json \
   --username-selector nama-class \
   --password-selector sandi-class \
   --submit-selector tombol-id
@@ -51,6 +71,8 @@ python src/scraper.py --advanced-search \
   --password-selector sandi-class \
   --submit-selector tombol-id
 ```
+
+Anda juga dapat menggunakan berkas konfigurasi dengan opsi `--config`.
 
 Skrip akan masuk ke aplikasi kemudian membuka halaman **Advanced Search**,
 memilih produk *Company*, memilih seluruh komponen serta semua nilai pada
@@ -76,8 +98,7 @@ Untuk menjalankan proses login di dalam container, gunakan:
 ```bash
 docker run --rm rpabuddy --login \
   --url https://contoh.com/login \
-  --username nama_pengguna \
-  --password kata_sandi \
+  --config config.json \
   --username-selector nama-class \
   --password-selector sandi-class \
   --submit-selector tombol-id
@@ -103,8 +124,7 @@ Untuk login menggunakan Docker Compose:
 docker compose build
 docker compose run rpabuddy --login \
   --url https://contoh.com/login \
-  --username nama_pengguna \
-  --password kata_sandi \
+  --config config.json \
   --username-selector nama-class \
   --password-selector sandi-class \
   --submit-selector tombol-id
