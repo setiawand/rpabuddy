@@ -38,6 +38,24 @@ python src/scraper.py --login \
 
 Perintah di atas hanya menguji proses login dan akan menampilkan pesan `Login berhasil` atau `Login gagal`.
 
+### Pencarian Lanjutan
+
+Anda dapat menjalankan proses login kemudian langsung melakukan pencarian lanjutan pada Bugzilla dengan opsi `--advanced-search`:
+
+```bash
+python src/scraper.py --advanced-search \
+  --url https://bugz.fds.co.id/ \
+  --username nama_pengguna \
+  --password kata_sandi \
+  --username-selector nama-class \
+  --password-selector sandi-class \
+  --submit-selector tombol-id
+```
+
+Skrip akan masuk ke aplikasi kemudian membuka halaman **Advanced Search**,
+memilih produk *Company*, memilih seluruh komponen serta semua nilai pada
+**Status** dan **Resolution**, lalu menekan tombol **Search**.
+
 
 ## Docker
 
