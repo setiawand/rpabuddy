@@ -97,7 +97,7 @@ def login_and_advanced_search(
     password_selector: str,
     submit_selector: str,
 ) -> bool:
-    """Login and perform an advanced search on bugz.fds.co.id."""
+    """Login and perform an advanced search on contoh.com."""
 
     logger.info("Starting login and search flow for %s", url)
 
@@ -146,7 +146,7 @@ def login_and_advanced_search(
             WebDriverWait(driver, 10).until(EC.url_contains("query.cgi"))
 
             logger.info("Switching to advanced search")
-            driver.get("https://bugz.fds.co.id/query.cgi?format=specific")
+            driver.get("https://contoh.com/query.cgi?format=specific")
 
             logger.info("Selecting product Company")
             Select(driver.find_element("id", "product")).select_by_visible_text(
