@@ -1,6 +1,7 @@
 """Simple RPA-based web scraper."""
 
 import argparse
+import json
 import logging
 import shutil
 import tempfile
@@ -189,11 +190,25 @@ def main() -> None:
     )
     parser.add_argument("--username", help="Username for login")
     parser.add_argument("--password", help="Password for login")
+    parser.add_argument(
+        "--config",
+        help="Path to JSON config file containing username and password",
+    )
     parser.add_argument("--username-selector", help="Class for username field")
     parser.add_argument("--password-selector", help="Class for password field")
     parser.add_argument("--submit-selector", help="ID for submit button")
 
     args = parser.parse_args()
+
+    if args.config:
+        try:
+            with open(args.config, "r", encoding="utf-8") as f:
+                cfg = json.load(f)
+        except FileNotFoundError:
+            parser.error(f"Config file {args.config} not found")
+
+        args.username = args.username or cfg.get("username")
+        args.password = args.password or cfg.get("password")
 
     if args.advanced_search:
         required = [
