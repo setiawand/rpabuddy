@@ -152,21 +152,33 @@ def login_and_advanced_search(
             product_select = Select(driver.find_element("id", "product"))
             for option in product_select.options:
                 option.click()
+            logger.info(
+                "Selected %d product options", len(product_select.options)
+            )
 
             logger.info("Selecting all components")
             comp_select = Select(driver.find_element("id", "component"))
             for option in comp_select.options:
                 option.click()
+            logger.info(
+                "Selected %d component options", len(comp_select.options)
+            )
 
             logger.info("Selecting all bug statuses")
             status_select = Select(driver.find_element("id", "bug_status"))
             for option in status_select.options:
                 option.click()
+            logger.info(
+                "Selected %d bug status options", len(status_select.options)
+            )
 
             logger.info("Selecting all resolutions")
             res_select = Select(driver.find_element("id", "resolution"))
             for option in res_select.options:
                 option.click()
+            logger.info(
+                "Selected %d resolution options", len(res_select.options)
+            )
 
             logger.info("Submitting search")
             driver.find_element("id", "Search").click()
