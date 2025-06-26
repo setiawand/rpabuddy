@@ -66,15 +66,26 @@ def login(
             logger.info("Submitting form")
             driver.find_element("id", submit_selector).click()
 
-            logger.info("Waiting for navigation to complete")
+            logger.info("Checking login result")
             try:
-                WebDriverWait(driver, 10).until(EC.url_changes(url))
+                WebDriverWait(driver, 10).until(
+                    lambda d: d.find_elements(
+                        "css selector", 'a[href="index.cgi?logout=1"]'
+                    )
+                    or d.find_elements("id", "error_msg")
+                )
             except TimeoutException:
-                logger.info("Login failed: timeout waiting for URL change")
+                logger.info(
+                    "Login failed: no logout link or error message detected"
+                )
                 return False
 
-            logger.info("Login successful")
-            return True
+            if driver.find_elements("css selector", 'a[href="index.cgi?logout=1"]'):
+                logger.info("Login successful")
+                return True
+
+            logger.info("Login failed: invalid credentials")
+            return False
 
 
 def login_and_advanced_search(
@@ -109,10 +120,24 @@ def login_and_advanced_search(
             logger.info("Submitting form")
             driver.find_element("id", submit_selector).click()
 
+            logger.info("Checking login result")
             try:
-                WebDriverWait(driver, 10).until(EC.url_changes(url))
+                WebDriverWait(driver, 10).until(
+                    lambda d: d.find_elements(
+                        "css selector", 'a[href="index.cgi?logout=1"]'
+                    )
+                    or d.find_elements("id", "error_msg")
+                )
             except TimeoutException:
-                logger.info("Login failed: timeout waiting for URL change")
+                logger.info(
+                    "Login failed: no logout link or error message detected"
+                )
+                return False
+
+            if not driver.find_elements(
+                "css selector", 'a[href="index.cgi?logout=1"]'
+            ):
+                logger.info("Login failed: invalid credentials")
                 return False
 
             logger.info("Login successful, navigating to search page")
