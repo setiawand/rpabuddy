@@ -149,10 +149,9 @@ def login_and_advanced_search(
             driver.get("https://contoh.com/query.cgi?format=specific")
 
             logger.info("Selecting product Company")
-            Select(driver.find_element("id", "product")).select_by_visible_text(
-                "Company"
-            )
-
+            product_select = Select(driver.find_element("id", "product"))
+            for option in product_select.options:
+                option.click()
 
             logger.info("Selecting all components")
             comp_select = Select(driver.find_element("id", "component"))
