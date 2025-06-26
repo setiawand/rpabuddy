@@ -19,6 +19,26 @@ from selenium.webdriver.chrome.options import Options  # type: ignore
 logger = logging.getLogger(__name__)
 
 
+def _select_all_by_id(driver: webdriver.Chrome, element_id: str) -> bool:
+    """Select all options of a ``<select>`` element by ID.
+
+    Returns ``True`` when the element exists. If the element can't be
+    located, ``False`` is returned and a log message is emitted.
+    """
+
+    try:
+        select_elem = Select(driver.find_element("id", element_id))
+    except Exception as exc:  # selenium.common.exceptions.NoSuchElementException
+        logger.error("Element with id '%s' not found: %s", element_id, exc)
+        return False
+
+    for option in select_elem.options:
+        option.click()
+
+    logger.info("Selected %d options for %s", len(select_elem.options), element_id)
+    return True
+
+
 def scrape(url: str, selector: str) -> List[str]:
     """Open the web page and return texts matching CSS selector."""
     options = Options()
@@ -149,36 +169,20 @@ def login_and_advanced_search(
             driver.get("https://contoh.com/query.cgi?format=specific")
 
             logger.info("Selecting product Company")
-            product_select = Select(driver.find_element("id", "product"))
-            for option in product_select.options:
-                option.click()
-            logger.info(
-                "Selected %d product options", len(product_select.options)
-            )
+            if not _select_all_by_id(driver, "product"):
+                return False
 
             logger.info("Selecting all components")
-            comp_select = Select(driver.find_element("id", "component"))
-            for option in comp_select.options:
-                option.click()
-            logger.info(
-                "Selected %d component options", len(comp_select.options)
-            )
+            if not _select_all_by_id(driver, "component"):
+                return False
 
             logger.info("Selecting all bug statuses")
-            status_select = Select(driver.find_element("id", "bug_status"))
-            for option in status_select.options:
-                option.click()
-            logger.info(
-                "Selected %d bug status options", len(status_select.options)
-            )
+            if not _select_all_by_id(driver, "bug_status"):
+                return False
 
             logger.info("Selecting all resolutions")
-            res_select = Select(driver.find_element("id", "resolution"))
-            for option in res_select.options:
-                option.click()
-            logger.info(
-                "Selected %d resolution options", len(res_select.options)
-            )
+            if not _select_all_by_id(driver, "resolution"):
+                return False
 
             logger.info("Submitting search")
             driver.find_element("id", "Search").click()
