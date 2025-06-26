@@ -27,7 +27,10 @@ def _select_all_by_id(driver: webdriver.Chrome, element_id: str) -> bool:
     """
 
     try:
-        select_elem = Select(driver.find_element("id", element_id))
+        element = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located(("id", element_id))
+        )
+        select_elem = Select(element)
     except Exception as exc:  # selenium.common.exceptions.NoSuchElementException
         logger.error("Element with id '%s' not found: %s", element_id, exc)
         return False
@@ -167,6 +170,15 @@ def login_and_advanced_search(
 
             logger.info("Switching to advanced search")
             driver.get("https://contoh.com/query.cgi?format=specific")
+            try:
+                WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located(
+                        ("css selector", "#tab_advanced.selected")
+                    )
+                )
+            except TimeoutException:
+                logger.error("Advanced search page did not load")
+                return False
 
             logger.info("Selecting product Company")
             if not _select_all_by_id(driver, "product"):
