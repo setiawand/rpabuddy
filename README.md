@@ -69,7 +69,8 @@ python src/scraper.py --advanced-search \
   --password kata_sandi \
   --username-selector nama-class \
   --password-selector sandi-class \
-  --submit-selector tombol-id
+  --submit-selector tombol-id \
+  --csv-output hasil.csv
 ```
 
 Anda juga dapat menggunakan berkas konfigurasi dengan opsi `--config`.
@@ -77,6 +78,8 @@ Anda juga dapat menggunakan berkas konfigurasi dengan opsi `--config`.
 Skrip akan masuk ke aplikasi kemudian membuka halaman **Advanced Search**,
 memilih produk *Company*, memilih seluruh komponen serta semua nilai pada
 **Status** dan **Resolution**, lalu menekan tombol **Search**.
+Jika opsi `--csv-output` diberikan, hasil pencarian akan disimpan ke berkas
+CSV tersebut.
 
 
 ## Docker
