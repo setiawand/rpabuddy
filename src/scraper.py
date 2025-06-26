@@ -5,7 +5,7 @@ import json
 import logging
 import shutil
 import tempfile
-from typing import List
+from typing import List, Optional
 
 from selenium.webdriver.support.ui import WebDriverWait, Select  # type: ignore
 from selenium.webdriver.support import expected_conditions as EC  # type: ignore
@@ -18,8 +18,9 @@ from selenium.webdriver.chrome.options import Options  # type: ignore
 
 logger = logging.getLogger(__name__)
 
-
-def _select_all_by_id(driver: webdriver.Chrome, element_id: str) -> bool:
+def _select_all_by_id(
+    driver: webdriver.Chrome, element_id: str, exclude_values: Optional[List[str]] = None
+) -> bool:
     """Select all options of a ``<select>`` element by ID.
 
     Returns ``True`` when the element exists. If the element can't be
@@ -35,10 +36,16 @@ def _select_all_by_id(driver: webdriver.Chrome, element_id: str) -> bool:
         logger.error("Element with id '%s' not found: %s", element_id, exc)
         return False
 
-    for option in select_elem.options:
-        option.click()
+    excluded = set(exclude_values or [])
 
-    logger.info("Selected %d options for %s", len(select_elem.options), element_id)
+    selected_count = 0
+    for option in select_elem.options:
+        if option.get_attribute("value") in excluded:
+            continue
+        option.click()
+        selected_count += 1
+
+    logger.info("Selected %d options for %s", selected_count, element_id)
     return True
 
 
@@ -188,8 +195,8 @@ def login_and_advanced_search(
             if not _select_all_by_id(driver, "component"):
                 return False
 
-            logger.info("Selecting all bug statuses")
-            if not _select_all_by_id(driver, "bug_status"):
+            logger.info("Selecting all bug statuses except CLOSED")
+            if not _select_all_by_id(driver, "bug_status", ["CLOSED"]):
                 return False
 
             logger.info("Selecting all resolutions")
