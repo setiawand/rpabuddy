@@ -126,8 +126,13 @@ def login_and_advanced_search(
     username_selector: str,
     password_selector: str,
     submit_selector: str,
+    csv_output: Optional[str] = None,
 ) -> bool:
-    """Login and perform an advanced search on contoh.com."""
+    """Login and perform an advanced search on contoh.com.
+
+    If ``csv_output`` is provided, the search result will be saved to the
+    specified file in CSV format.
+    """
 
     logger.info("Starting login and search flow for %s", url)
 
@@ -206,6 +211,30 @@ def login_and_advanced_search(
             logger.info("Submitting search")
             driver.find_element("id", "Search").click()
 
+            logger.info("Waiting for search results")
+            try:
+                csv_link = WebDriverWait(driver, 10).until(
+                    EC.element_to_be_clickable(("link text", "CSV"))
+                )
+            except TimeoutException:
+                logger.error("CSV link not found on results page")
+                return False
+
+            if csv_output:
+                logger.info("Downloading CSV to %s", csv_output)
+                csv_url = csv_link.get_attribute("href")
+                driver.get(csv_url)
+                try:
+                    pre = driver.find_element("tag name", "pre")
+                    csv_text = pre.text
+                except Exception:
+                    csv_text = driver.page_source
+                with open(csv_output, "w", encoding="utf-8") as f:
+                    f.write(csv_text)
+            else:
+                logger.info("Triggering CSV download")
+                csv_link.click()
+
             return True
 
 
@@ -231,6 +260,10 @@ def main() -> None:
     parser.add_argument("--username-selector", help="Class for username field")
     parser.add_argument("--password-selector", help="Class for password field")
     parser.add_argument("--submit-selector", help="ID for submit button")
+    parser.add_argument(
+        "--csv-output",
+        help="Save advanced search result CSV to this file",
+    )
 
     args = parser.parse_args()
 
@@ -264,6 +297,7 @@ def main() -> None:
             args.username_selector,
             args.password_selector,
             args.submit_selector,
+            args.csv_output,
         )
         print("Pencarian selesai" if success else "Pencarian gagal")
         return
