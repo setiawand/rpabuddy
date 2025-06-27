@@ -20,6 +20,11 @@ from selenium.webdriver.chrome.options import Options  # type: ignore
 
 logger = logging.getLogger(__name__)
 
+
+def _log_current_url(driver: webdriver.Chrome) -> None:
+    """Log the current URL of the provided driver."""
+    logger.info("Current page URL: %s", driver.current_url)
+
 def _select_all_by_id(
     driver: webdriver.Chrome, element_id: str, exclude_values: Optional[List[str]] = None
 ) -> bool:
@@ -63,6 +68,7 @@ def scrape(url: str, selector: str) -> List[str]:
         options.add_argument(f"--user-data-dir={user_data_dir}")
         with webdriver.Chrome(options=options) as driver:
             driver.get(url)
+            _log_current_url(driver)
             html = driver.page_source
 
     soup = BeautifulSoup(html, "html.parser")
@@ -94,9 +100,11 @@ def login(
         with webdriver.Chrome(options=options) as driver:
             logger.info("Opening URL %s", url)
             driver.get(url)
+            _log_current_url(driver)
 
             logger.info("Clicking login link")
             driver.find_element("id", "login_link_top").click()
+            _log_current_url(driver)
 
             logger.info("Entering username")
             driver.find_element("class name", username_selector).send_keys(username)
@@ -104,6 +112,7 @@ def login(
             driver.find_element("class name", password_selector).send_keys(password)
             logger.info("Submitting form")
             driver.find_element("id", submit_selector).click()
+            _log_current_url(driver)
 
             logger.info("Checking login result")
             try:
@@ -117,13 +126,16 @@ def login(
                 logger.info(
                     "Login failed: no logout link or error message detected"
                 )
+                _log_current_url(driver)
                 return False
 
             if driver.find_elements("css selector", 'a[href="index.cgi?logout=1"]'):
+                _log_current_url(driver)
                 logger.info("Login successful")
                 return True
 
             logger.info("Login failed: invalid credentials")
+            _log_current_url(driver)
             return False
 
 
@@ -181,20 +193,24 @@ def login_and_advanced_search(
                 logger.info(
                     "Login failed: no logout link or error message detected"
                 )
+                _log_current_url(driver)
                 return False
 
             if not driver.find_elements(
                 "css selector", 'a[href="index.cgi?logout=1"]'
             ):
                 logger.info("Login failed: invalid credentials")
+                _log_current_url(driver)
                 return False
 
             logger.info("Login successful, navigating to search page")
             driver.find_element("link text", "Search").click()
+            _log_current_url(driver)
             WebDriverWait(driver, 10).until(EC.url_contains("query.cgi"))
 
             logger.info("Switching to advanced search")
             driver.get(urljoin(url, "query.cgi?format=advanced"))
+            _log_current_url(driver)
             try:
                 WebDriverWait(driver, 10).until(
                     EC.presence_of_element_located(
@@ -223,6 +239,7 @@ def login_and_advanced_search(
 
             logger.info("Submitting search")
             driver.find_element("id", "Search").click()
+            _log_current_url(driver)
 
             logger.info("Waiting for search results")
             try:
@@ -241,6 +258,7 @@ def login_and_advanced_search(
             csv_url = csv_link.get_attribute("href")
             logger.info("csv_url %s", csv_url)
             driver.get(csv_url)
+            _log_current_url(driver)
             try:
                 pre = driver.find_element("tag name", "pre")
                 logger.debug("<pre> tag found in CSV download")
