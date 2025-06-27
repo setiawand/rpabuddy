@@ -14,6 +14,7 @@ from selenium.common.exceptions import TimeoutException  # type: ignore
 
 from bs4 import BeautifulSoup  # type: ignore
 from selenium import webdriver  # type: ignore
+from urllib.parse import urljoin
 from selenium.webdriver.chrome.options import Options  # type: ignore
 
 
@@ -193,7 +194,7 @@ def login_and_advanced_search(
             WebDriverWait(driver, 10).until(EC.url_contains("query.cgi"))
 
             logger.info("Switching to advanced search")
-            driver.get("https://contoh.com/query.cgi?format=advanced")
+            driver.get(urljoin(url, "query.cgi?format=advanced"))
             try:
                 WebDriverWait(driver, 10).until(
                     EC.presence_of_element_located(
