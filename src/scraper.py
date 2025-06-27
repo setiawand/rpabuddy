@@ -239,6 +239,7 @@ def login_and_advanced_search(
 
             logger.info("Downloading CSV to %s", csv_output)
             csv_url = csv_link.get_attribute("href")
+            logger.info("csv_url %s", csv_url)
             driver.get(csv_url)
             try:
                 pre = driver.find_element("tag name", "pre")
