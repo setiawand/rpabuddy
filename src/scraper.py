@@ -54,6 +54,9 @@ def scrape(url: str, selector: str) -> List[str]:
     options = Options()
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
+    options.add_argument(
+        "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
+    )
     with tempfile.TemporaryDirectory(prefix="selenium-") as user_data_dir:
         options.add_argument(f"--user-data-dir={user_data_dir}")
         with webdriver.Chrome(options=options) as driver:
@@ -80,6 +83,9 @@ def login(
     options = Options()
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
+    options.add_argument(
+        "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
+    )
 
     with tempfile.TemporaryDirectory(prefix="selenium-") as user_data_dir:
         options.add_argument(f"--user-data-dir={user_data_dir}")
@@ -139,6 +145,9 @@ def login_and_advanced_search(
     options = Options()
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
+    options.add_argument(
+        "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
+    )
 
     with tempfile.TemporaryDirectory(prefix="selenium-") as user_data_dir:
         options.add_argument(f"--user-data-dir={user_data_dir}")
