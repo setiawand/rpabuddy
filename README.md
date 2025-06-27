@@ -100,14 +100,31 @@ Untuk menjalankan proses login di dalam container, Anda perlu me-*mount* berkas
 `config.json` karena berkas tersebut tidak termasuk di dalam image:
 
 ```bash
+  docker run --rm \
+    -v "$(pwd)/config.json:/app/config.json" \
+    rpabuddy --login \
+      --url https://contoh.com/login \
+      --config /app/config.json \
+      --username-selector nama-class \
+      --password-selector sandi-class \
+      --submit-selector tombol-id
+```
+
+Jika Anda menyimpan hasil dengan opsi `--csv-output`, path yang diberikan
+adalah relatif terhadap direktori kerja `/app` di dalam container. *Mount*
+direktori pada host agar berkas dapat diakses:
+
+```bash
 docker run --rm \
-  -v "$(pwd)/config.json:/app/config.json" \
-  rpabuddy --login \
-    --url https://contoh.com/login \
-    --config /app/config.json \
+  -v "$(pwd)/output:/app/output" \
+  rpabuddy --advanced-search \
+    --url https://contoh.com/ \
+    --username nama_pengguna \
+    --password kata_sandi \
     --username-selector nama-class \
     --password-selector sandi-class \
-    --submit-selector tombol-id
+    --submit-selector tombol-id \
+    --csv-output /app/output/hasil.csv
 ```
 
 Browser Chromium dalam container memerlukan flag `--no-sandbox`. Skrip sudah
@@ -130,11 +147,27 @@ dengan contoh di atas:
 ```bash
 docker compose build
 docker compose run -v "$(pwd)/config.json:/app/config.json" rpabuddy --login \
-  --url https://contoh.com/login \
-  --config /app/config.json \
-  --username-selector nama-class \
-  --password-selector sandi-class \
-  --submit-selector tombol-id
+    --url https://contoh.com/login \
+    --config /app/config.json \
+    --username-selector nama-class \
+    --password-selector sandi-class \
+    --submit-selector tombol-id
+```
+
+Sama halnya, ketika menggunakan opsi `--csv-output`, path tujuan berada di
+direktori `/app`. Mount direktori pada host agar hasil CSV dapat tersimpan:
+
+```bash
+docker compose run \
+  -v "$(pwd)/output:/app/output" \
+  rpabuddy --advanced-search \
+    --url https://contoh.com/ \
+    --username nama_pengguna \
+    --password kata_sandi \
+    --username-selector nama-class \
+    --password-selector sandi-class \
+    --submit-selector tombol-id \
+    --csv-output /app/output/hasil.csv
 ```
 
 
