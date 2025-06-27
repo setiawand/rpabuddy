@@ -3,6 +3,7 @@
 import argparse
 import json
 import logging
+import os
 import shutil
 import tempfile
 from typing import List, Optional
@@ -133,11 +134,13 @@ def login_and_advanced_search(
     password_selector: str,
     submit_selector: str,
     csv_output: Optional[str] = None,
+    download_dir: str = ".",
 ) -> bool:
     """Login and perform an advanced search on contoh.com.
 
     If ``csv_output`` is provided, the search result will be saved to the
-    specified file in CSV format.
+    specified file in CSV format. When ``csv_output`` is not specified, the
+    result will be saved as ``download.csv`` inside ``download_dir``.
     """
 
     logger.info("Starting login and search flow for %s", url)
@@ -229,20 +232,23 @@ def login_and_advanced_search(
                 logger.error("CSV link not found on results page")
                 return False
 
-            if csv_output:
-                logger.info("Downloading CSV to %s", csv_output)
-                csv_url = csv_link.get_attribute("href")
-                driver.get(csv_url)
-                try:
-                    pre = driver.find_element("tag name", "pre")
-                    csv_text = pre.text
-                except Exception:
-                    csv_text = driver.page_source
-                with open(csv_output, "w", encoding="utf-8") as f:
-                    f.write(csv_text)
-            else:
-                logger.info("Triggering CSV download")
-                csv_link.click()
+            if not csv_output:
+                csv_output = os.path.join(download_dir, "download.csv")
+                logger.info("csv-output not provided; using default %s", csv_output)
+
+            logger.info("Downloading CSV to %s", csv_output)
+            csv_url = csv_link.get_attribute("href")
+            driver.get(csv_url)
+            try:
+                pre = driver.find_element("tag name", "pre")
+                logger.debug("<pre> tag found in CSV download")
+                csv_text = pre.text
+            except Exception:
+                logger.debug("No <pre> tag found; using page source")
+                csv_text = driver.page_source
+            os.makedirs(os.path.dirname(csv_output) or ".", exist_ok=True)
+            with open(csv_output, "w", encoding="utf-8") as f:
+                f.write(csv_text)
 
             return True
 
@@ -272,6 +278,11 @@ def main() -> None:
     parser.add_argument(
         "--csv-output",
         help="Save advanced search result CSV to this file",
+    )
+    parser.add_argument(
+        "--download-dir",
+        default=".",
+        help="Directory to save CSV when --csv-output is not provided",
     )
 
     args = parser.parse_args()
@@ -307,6 +318,7 @@ def main() -> None:
             args.password_selector,
             args.submit_selector,
             args.csv_output,
+            args.download_dir,
         )
         print("Pencarian selesai" if success else "Pencarian gagal")
         return
