@@ -261,11 +261,12 @@ def login_and_advanced_search(
             _log_current_url(driver)
             try:
                 pre = driver.find_element("tag name", "pre")
-                logger.debug("<pre> tag found in CSV download")
+                logger.info("<pre> tag found in CSV download")
                 csv_text = pre.text
             except Exception:
-                logger.debug("No <pre> tag found; using page source")
+                logger.info("No <pre> tag found; using page source")
                 csv_text = driver.page_source
+            logger.info("csv_output %s", csv_output)
             os.makedirs(os.path.dirname(csv_output) or ".", exist_ok=True)
             with open(csv_output, "w", encoding="utf-8") as f:
                 f.write(csv_text)
